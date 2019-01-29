@@ -21,13 +21,12 @@ from django.contrib import admin
 from django.urls import path
 import mainapp.views as controller
 
+from django.conf.urls import include
+
 urlpatterns = [
-    path('', controller.index, name='index'),
-    path('products/', controller.products, name='products'),
-    path('contact/', controller.contact, name='contact'),
-
-    path('company/', include('mainapp.urls', namespace='company')),
-
+    path('', mainapp.main, name='main'),
+    path('products/', include('mainapp.urls', namespace='products')),
+    path('contact/', mainapp.contact, name='contact'),
     path('admin/', admin.site.urls),
 ]
 

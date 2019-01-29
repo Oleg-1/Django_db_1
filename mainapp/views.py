@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpRequest
-from .models import Person, Department
+from .models import ProductCategory, Product
 import datetime
 
 def index(request: HttpRequest):
@@ -99,10 +99,12 @@ def contact(request: HttpRequest):
         'locations': locations
     })
 
-def company_index(request: HttpRequest):
-    deps = Department.objects.all()
-    pass
 
-def company_view(request: HttpRequest, id=None):
-    deps = Department.objects.get(pk=id)
-    pass
+def main(request):
+    title = 'главная'
+
+    products = Product.objects.all()[:4]
+
+    content = {'title': title, 'products': products}
+    return render(request, 'mainapp/index.html', content)
+
