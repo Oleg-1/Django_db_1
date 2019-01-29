@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import Department, Person
+from .models import ProductCategory, Product
 
-# Register your models here.
-admin.site.register(Department)
-admin.site.register(Person)
+admin.site.register(ProductCategory)
+admin.site.register(Product)
