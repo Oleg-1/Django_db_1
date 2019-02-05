@@ -1,77 +1,61 @@
-from django.shortcuts import render
-from django.http import HttpRequest
-from .models import ProductCategory, Product
-import datetime
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpRequest, HttpResponse
+from basketapp.models import Basket
 
-def index(request: HttpRequest):
+import datetime
+from .models import ProductCategory, Product
+
+
+def main(request: HttpRequest):
     title = 'главная'
 
-    products_list = [
-        {
-            'name': 'Отличный стул',
-            'desc': 'Расположитесь комфортно.',
-            'image_src': 'product-1.jpg',
-            'image_href': '/product/1/',
-            'alt': 'продукт 1'
-        },
-        {
-            'name': 'Стул повышенного качества',
-            'desc': 'Не оторваться.',
-            'image_src': 'product-2.jpg',
-            'image_href': '/product/2/',
-            'alt': 'продукт 2'
-        },
-    ]
+    products = Product.objects.all()
+
 
     return render(request, 'mainapp/index.html', {
         'title': title,
-        'products': products_list
+        'products': products,
     })
 
 
-def products(request: HttpRequest):
+def products(request: HttpRequest, id=None):
     title = 'продукты'
+    links_menu = ProductCategory.objects.all()
+    basket = Basket.objects.filter(user=request.user)
 
-    links_menu = [
-        {'href': '/products/0/', 'name': 'все'},
-        {'href': '/products/1/', 'name': 'дом'},
-        {'href': '/products/2/', 'name': 'офис'},
-        {'href': '/products/3/', 'name': 'модерн'},
-        {'href': '/products/4/', 'name': 'классика'},
-    ]
-
-    same_products = [
-        {
-            'name': 'Отличный стул',
-            'desc': 'Не оторваться.',
-            'image_src': 'product-11.jpg',
-            'alt': 'продукт 11'
-        },
-        {
-            'name': 'Стул повышенного качества',
-            'desc': 'Комфортно.',
-            'image_src': 'product-21.jpg',
-            'alt': 'продукт 21'
-        },
-        {
-            'name': 'Стул премиального качества',
-            'desc': 'Просто попробуйте.',
-            'image_src': 'product-31.jpg',
-            'alt': 'продукт 31'
-        },
-    ]
+    if id is not None:
+        same_products = Product.objects.filter(category__pk=id)
+    else:
+        same_products = Product.objects.all()
 
     return render(request, 'mainapp/products.html', {
         'title': title,
         'links_menu': links_menu,
-        'same_products': same_products
+        'same_products': same_products,
+        'basket': basket
     })
+
+
+def product_detail(request: HttpRequest, id=None):
+    # if id is not None:
+        # item = Product.objects.get(pk=id)
+    item = get_object_or_404(Product, pk=id)
+    same_products = Product.objects.exclude(pk=id).filter(category__pk=item.category_id)
+    links_menu = ProductCategory.objects.all()
+
+    context = {
+        'title': f'Товар: {item.name}',
+        'item': item,
+        'products': same_products,
+        'links_menu': links_menu,
+    }
+
+    return render(request, 'mainapp/details.html', context)
 
 
 def contact(request: HttpRequest):
     title = 'о нас'
     visit_date = datetime.datetime.now()
-
     locations = [
         {
             'city': 'Москва',
@@ -98,13 +82,3 @@ def contact(request: HttpRequest):
         'visit_date': visit_date,
         'locations': locations
     })
-
-
-def main(request):
-    title = 'главная'
-
-    products = Product.objects.all()[:4]
-
-    content = {'title': title, 'products': products}
-    return render(request, 'mainapp/index.html', content)
-
