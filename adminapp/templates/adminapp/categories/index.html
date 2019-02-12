@@ -1,0 +1,17 @@
+{% extends 'adminapp/base.html' %}
+
+{% block content %}
+    <hr>
+
+    <h1>Список категорий</h1>
+
+    <ul>
+        {% for item in models %}
+            <li>
+                <a href="{% url 'admin:category_read' id=item.id %}">
+                    {{ item.name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

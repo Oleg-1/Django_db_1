@@ -4,7 +4,15 @@ from basketapp.models import Basket
 
 import datetime
 from .models import ProductCategory, Product
-from django.shortcuts import get_object_or_404
+
+
+def get_current_basket(current_user):
+    if current_user.is_authenticated:
+        items = Basket.objects.filter(user=current_user)
+    else:
+        items = None
+
+    return items
 
 
 def main(request: HttpRequest):
@@ -12,48 +20,33 @@ def main(request: HttpRequest):
 
     products = Product.objects.all()
 
-
     return render(request, 'mainapp/index.html', {
         'title': title,
         'products': products,
+        'basket': get_current_basket(request.user)
     })
 
 
-def products(request, pk=None):
-    print(pk)
-
+def products(request: HttpRequest, id=None):
     title = 'продукты'
     links_menu = ProductCategory.objects.all()
 
-    if pk is not None:
-        if pk == 0:
-            products = Product.objects.all().order_by('price')
-            category = {'name': 'все'}
-        else:
-            category = get_object_or_404(ProductCategory, pk=pk)
-            products = Product.objects.filter(category__pk=pk).order_by('price')
+    if id is not None:
+        same_products = Product.objects.filter(category__pk=id)
+    else:
+        same_products = Product.objects.all()
 
-        content = {
-            'title': title,
-            'links_menu': links_menu,
-            'category': category,
-            'products': products,
-        }
-
-        return render(request, 'mainapp/products_list.html', content)
-
-    same_products = Product.objects.all()[3:5]
-
-    content = {
+    return render(request, 'mainapp/products.html', {
         'title': title,
         'links_menu': links_menu,
-        'same_products': same_products
-    }
-
-    return render(request, 'mainapp/products.html', content)
+        'same_products': same_products,
+        'basket': get_current_basket(request.user)
+    })
 
 
 def product_detail(request: HttpRequest, id=None):
+    # if id is not None:
+    # item = Product.objects.get(pk=id)
     item = get_object_or_404(Product, pk=id)
     same_products = Product.objects.exclude(pk=id).filter(category__pk=item.category_id)
     links_menu = ProductCategory.objects.all()
@@ -63,6 +56,7 @@ def product_detail(request: HttpRequest, id=None):
         'item': item,
         'products': same_products,
         'links_menu': links_menu,
+        'basket': get_current_basket(request.user)
     }
 
     return render(request, 'mainapp/details.html', context)

@@ -11,7 +11,7 @@ class ProductCategory(models.Model):
 
 
 class Product(models.Model):
-    category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
+    category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, related_name='products')
     name = models.CharField(verbose_name='имя продукта', max_length=128)
     image = models.ImageField(upload_to='products_images', blank=True)
     short_desc = models.CharField(verbose_name='краткое описание продукта', max_length=60, blank=True)
