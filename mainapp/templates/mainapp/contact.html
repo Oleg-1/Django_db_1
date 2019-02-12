@@ -1,14 +1,10 @@
 {% extends 'mainapp/base.html' %}
-
-{% load static %}
+{% load static%}
 
 {% block menu %}
     <div class="hero">
         <div class="header clearfix">
-            <a href="/" class="logo"></a>
             {% include 'mainapp/includes/inc_menu.html' %}
-            <a href="#" class="search"></a>
-            <a href="#" class="basket"></a>
         </div>
         <h1>наши контакты</h1>
     </div>
@@ -16,7 +12,6 @@
 
 {% block content %}
     <div class="location">
-
         {% for location in locations %}
             <div class="location-1">
                 <i class="fa fa-map-marker fa-5x"></i>
@@ -35,7 +30,6 @@
                 </div>
             </div>
         {% endfor %}
-
     </div>
 
     <div class="clr"></div>

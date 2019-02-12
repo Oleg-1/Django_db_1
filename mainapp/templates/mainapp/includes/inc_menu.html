@@ -5,12 +5,10 @@
         </a>
     </li>
     <li>
-      <a href="{% url 'products:index' %}"
-         class="{% if request.resolver_match.namespace == 'products' %}
-                  active
-                {% endif %}">
-        продукты
-      </a>
+        <a href="{% url 'products:index' %}"
+           class="{% if request.resolver_match.url_name == 'products' or request.resolver_match.url_name == 'category' or request.resolver_match.url_name == 'index' %}active{% endif %}">
+            продукты
+        </a>
     </li>
     <li>
         <a href="{% url 'contact' %}" class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}">
@@ -19,28 +17,39 @@
     </li>
 
     {% if user.is_authenticated %}
-    <li>
-        <a href="{% url 'auth:edit' %}">
-            Мой профиль
-        </a>
-    </li>
+        <li>
+            <a href="{% url 'auth:edit' %}">
+                Мой профиль
+            </a>
+        </li>
+    {% endif %}
+
+    {% if user.is_superuser %}
+        <li>
+            <a href="{% url 'admin:categories' %}">
+                Админ-панель
+            </a>
+        </li>
     {% endif %}
 
     <li>
         {% if user.is_authenticated %}
-        <a href="{% url 'auth:logout' %}">
-            выйти
-        </a>
+            <a href="{% url 'auth:logout' %}">
+                выйти
+            </a>
         {% else %}
-        <a href="{% url 'auth:login' %}">
-            войти
-        </a>
+            <a href="{% url 'auth:login' %}">
+                войти
+            </a>
         {% endif %}
     </li>
 </ul>
 <a href="#" class="search"></a>
-<a href="{% url 'basket:view' %}" class="basket">
+<a href="{% url 'basket:index' %}" class="basket">
     <span>
-        {% if basket %} {{ basket|length }} {% endif %}
+        {% if basket %}
+            {{ basket.0.total_quantity }} товаров <br>
+            {{ basket.0.total_cost }} руб <br>
+        {% endif %}
     </span>
 </a>

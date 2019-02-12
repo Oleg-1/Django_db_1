@@ -1,0 +1,28 @@
+{% extends 'adminapp/base.html' %}
+
+{% block content %}
+    <hr>
+
+    <h1>{{ model.name }}</h1>
+
+    <a href="{% url 'admin:category_delete' id=model.id %}">Удалить</a>
+    <a href="{% url 'admin:category_update' id=model.id %}">Редактировать</a>
+
+    <p>{{ model.description }}</p>
+
+    <h2>Товары в категории:</h2>
+
+    <ul>
+        {% for product in products %}
+            <li>
+                <a href="{% url 'admin:product_read' id=product.id %}">
+                    {{ product.name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <p>
+    <a href="{% url 'admin:product_category' category=model.id %}">Все товары</a>
+    </p>
+{% endblock %}

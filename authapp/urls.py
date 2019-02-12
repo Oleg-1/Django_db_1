@@ -5,9 +5,6 @@ import authapp.views as controller
 app_name = 'authapp'
 
 urlpatterns = [
-    # path('', controller.login, name='index'), <-- не надо
-    path('', controller.redirect_to_login, name='index'),
-
     path('login/', controller.login, name='login'),
     path('logout/', controller.logout, name='logout'),
 
