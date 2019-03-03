@@ -19,5 +19,5 @@ class Command(BaseCommand):
         # )
 
         CustomUser.objects.create_superuser(
-            'manchenkov123', 'test@test.com', 'root', age=20
+            'oleg', 'test@test.com', 'root', age=25
         )
